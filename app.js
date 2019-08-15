@@ -8,10 +8,9 @@ const logger = require('koa-logger')
 const session = require('koa-generic-session')
 const redisStore = require('koa-redis')
 const koaBody = require('koa-body');
-// const index = require('./routes/index')
-// const users = require('./routes/users')
 const blog = require('./routes/blog')
 const user = require('./routes/user')
+const comment = require('./routes/comment')
 
 const {REDIS_CONF} = require('./conf/db')
 
@@ -60,10 +59,9 @@ app.use(session({
   })
 }))
 // routes
-// app.use(index.routes(), index.allowedMethods())
-// app.use(users.routes(), users.allowedMethods())
 app.use(blog.routes(), blog.allowedMethods())
 app.use(user.routes(), user.allowedMethods())
+app.use(comment.routes(), comment.allowedMethods())
 
 // error-handling
 app.on('error', (err, ctx) => {
