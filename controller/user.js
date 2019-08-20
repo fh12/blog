@@ -5,7 +5,7 @@ const login = async (username, password) => {
   //生成加密密码
   password = genPassword(password)
   password = escape(password)
-  const sql = `select userId, username, nickname, phone from users where username=${username} and password=${password} `
+  const sql = `select userId, username, nickname, phone, avatar, resume from users where username=${username} and password=${password} `
   const rows = await exec(sql)
   return rows[0] || {}
 }
@@ -27,11 +27,24 @@ const register = async (userData = {}) => {
       id: insertData.insertId
     }
   }
-  
-  
+}
+const update = async (userId, userData = {}) => {
+  nickname = escape(userData.nickname) || ''
+  phone = userData.phone || ""
+  avatar = userData.avatar || ""
+  resume = userData.resume || ""
+  nickname = escape(userData.nickname) || ''
+  phone = userData.phone || null
+  const sql = `update users set phone='${phone}', nickname=${nickname}, avatar='${avatar}', resume='${resume}' where userId='${userId}' `
+  const updatetData = await exec(sql)
+  if(updatetData.affectedRows > 0) {
+    return true
+  }
+  return false
 }
 
 module.exports = {
   login,
-  register
+  register,
+  update
 }
