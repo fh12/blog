@@ -25,8 +25,9 @@ const newBlog = async (blogData = {}) =>{
   const imgurl = blogData.imgurl || null
   const content = blogData.content
   const author = blogData.author
+  const authorAvatar = blogData.authorAvatar
   const createtime = Date.now()
-  const sql = `insert into blogs (title, content, createtime, author, imgurl) values ('${title}','${content}',${createtime},'${author}','${imgurl}')`
+  const sql = `insert into blogs (title, content, createtime, author, imgurl, authorAvatar) values ('${title}','${content}',${createtime},'${author}','${imgurl}','${authorAvatar}')`
   const insertData = await exec(sql)
   return {
     id: insertData.insertId

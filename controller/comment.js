@@ -17,14 +17,14 @@ const getComment = async (blogId) => {
 }
 
 const addComment = async (blogData = {}) =>{
-  console.log(blogData)
   const userId = blogData.userId
   const nickname = blogData.nickname || null
   const comment = blogData.comment
   const blogId = blogData.blogId
+  const userAvatar = blogData.userAvatar
   const createtime = Date.now()
   
-  const sql = `insert into comments (userId, nickname, comment, blogId, createtime) values ('${userId}','${nickname}','${comment}','${blogId}','${createtime}')`
+  const sql = `insert into comments (userId, nickname, comment, blogId, createtime, userAvatar) values ('${userId}','${nickname}','${comment}','${blogId}','${createtime}','${userAvatar}')`
   const insertData = await exec(sql)
   return {
     commentId: insertData.insertId
