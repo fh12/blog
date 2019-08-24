@@ -7,7 +7,7 @@ const {SuccessModel, ErrorModel} = require('../model/resModel')
 const loginCheck = require('../middleware/loginCheck')
 
 router.prefix('/api/blog')
-
+// 博客列表
 router.get('/list', async function(ctx, next) {
   let author = ctx.query.author || ''
   const keyword = ctx.query.keyword || ''
@@ -24,19 +24,19 @@ router.get('/list', async function(ctx, next) {
   const listData = await getList(author, keyword)
   ctx.body = new SuccessModel(listData)
 })
-
+//博客详情
 router.get('/detail', async function(ctx, next){
   const data = await getDetail(ctx.query.id)
   ctx.body = new SuccessModel(data)
 })
-
+// 新增一篇博客
 router.post('/new', loginCheck, async function(ctx, next){
   const body = ctx.request.body
   body.author = ctx.session.username
   const data = await newBlog(body)
   ctx.body = new SuccessModel(data)
 })
-
+// 上传博客图片
 router.post('/upload', async function(ctx, next){
  // 上传单个文件
  const file = ctx.request.files.file; // 获取上传文件
@@ -52,7 +52,7 @@ router.post('/upload', async function(ctx, next){
    imgurl: `http://176.122.153.101/upload/${file.name}`
  })
 })
-
+// 博客更新
 router.post('/update', loginCheck, async function(ctx, next){
   const val = await updateBlog(ctx.query.id, ctx.request.body)
   if(val){
@@ -61,6 +61,7 @@ router.post('/update', loginCheck, async function(ctx, next){
     ctx.body = new ErrorModel('更新博客失败')
   }
 })
+// 博客删除
 router.post('/del', loginCheck, async function(ctx, next){
   const author = ctx.session.username
   const val = await delBlog(ctx.query.id, author)

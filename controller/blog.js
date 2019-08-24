@@ -53,10 +53,23 @@ const delBlog = async (id, author) =>{
   }
   return false
 }
+const likeBlog = async (blogData={}) =>{
+  id = blogData.id
+  const sql = `update blogs set likeCount=likeCount+1 where id='${id}' `
+  const updatetData = await exec(sql)
+  if(updatetData.affectedRows > 0) {
+    return true
+  }else{
+    exec("ROLLBACK")
+  }
+  
+}
+
 module.exports = {
   getList,
   getDetail,
   newBlog,
   updateBlog,
-  delBlog
+  delBlog,
+  likeBlog
 }
