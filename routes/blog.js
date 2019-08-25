@@ -1,6 +1,6 @@
 const router = require('koa-router')()
 const fs = require('fs')
-const {getList, getDetail, newBlog, updateBlog, delBlog} = require('../controller/blog')
+const {getList, getDetail, newBlog, updateBlog, delBlog, likeBlog, favorBlog, getFavorList} = require('../controller/blog')
 const {SuccessModel, ErrorModel} = require('../model/resModel')
 
 //登录验证的中间件
@@ -10,7 +10,7 @@ router.prefix('/api/blog')
 // 博客列表
 router.get('/list', async function(ctx, next) {
   let author = ctx.query.author || ''
-  const keyword = ctx.query.keyword || ''
+  const keyword = ctx.query.keywords || ''
 
   if(ctx.query.isadmin){
     if(ctx.session.username == null){
@@ -33,6 +33,7 @@ router.get('/detail', async function(ctx, next){
 router.post('/new', loginCheck, async function(ctx, next){
   const body = ctx.request.body
   body.author = ctx.session.username
+  body.authorNickname = ctx.session.nickname
   const data = await newBlog(body)
   ctx.body = new SuccessModel(data)
 })
@@ -71,5 +72,38 @@ router.post('/del', loginCheck, async function(ctx, next){
     ctx.body = new ErrorModel('删除博客失败')
   }
 })
+//点赞
+router.post('/like', loginCheck, async function(ctx, next){
+  const data = await likeBlog(ctx.request.body)
+  if(data){
+    ctx.body = new SuccessModel('点赞成功')
+  }else{
+    ctx.body = new ErrorModel('点赞失败')
+  }
+})
+//收藏
+router.post('/favor', loginCheck, async function(ctx, next){
+  const data = await favorBlog(ctx.request.body)
+  if(data){
+    ctx.body = new SuccessModel('收藏成功')
+  }else{
+    ctx.body = new ErrorModel('收藏失败')
+  }
+})
 
+// 获取收藏列表
+router.get('/favorList', loginCheck, async function(ctx, next){
+  let userId = ctx.query.userId || ''
+
+  if(ctx.query.isadmin){
+    if(ctx.session.username == null){
+      ctx.body = new ErrorModel('未登录')
+      return
+    }
+    // 强制查询自己的博客
+    userId = ctx.session.userId
+  }
+  const listData = await getFavorList(userId)
+  ctx.body = new SuccessModel(listData)
+})
 module.exports = router
