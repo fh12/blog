@@ -93,16 +93,8 @@ router.post('/favor', loginCheck, async function(ctx, next){
 
 // 获取收藏列表
 router.get('/favorList', loginCheck, async function(ctx, next){
-  let userId = ctx.query.userId || ''
-
-  if(ctx.query.isadmin){
-    if(ctx.session.username == null){
-      ctx.body = new ErrorModel('未登录')
-      return
-    }
-    // 强制查询自己的博客
-    userId = ctx.session.userId
-  }
+  // 强制查询自己的收藏
+  userId = ctx.session.userId
   const listData = await getFavorList(userId)
   ctx.body = new SuccessModel(listData)
 })

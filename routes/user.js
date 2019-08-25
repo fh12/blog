@@ -16,6 +16,13 @@ router.post('/login', async function (ctx, next) {
   }
   ctx.body = new ErrorModel('登录失败')
 })
+router.post('/logout', async function (ctx, next) {
+    ctx.session.username = null
+    ctx.session.nickname = null
+    ctx.session.userId = null
+    ctx.body = new SuccessModel('退出登录')
+    return
+})
 router.post('/register', async function (ctx, next) {
   const data = await register(ctx.request.body)
   if(data.id){
